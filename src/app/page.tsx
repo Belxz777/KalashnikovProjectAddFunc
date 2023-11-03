@@ -1,17 +1,17 @@
 'use client'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState,useCallback } from 'react'
 import burgerImage from '../images&svg/2023-10-28_19-48-16.png'
 import BurgerMenuIcon from '@/reusable/BurgerMenuLogo'
 import CrossMenu from '@/reusable/Cross'
 import Menu from '@/reusable/Menu'
 import useKeenSlider from 'keen-slider'
 import Carousel from 'embla-carousel'
-import useEmblaCarousel, { EmblaOptionsType } from "embla-carousel-react";
+import useEmblaCarousel, { EmblaOptionsType,EmblaCarouselType } from "embla-carousel-react";
 import { useEffect } from 'react'
 import axios from 'axios'
-import Carousels from '@/reusable/PerSlide'
+import { DotButton,PrevButton,NextButton } from '@/reusable/Dots&Arrows'
 interface IUser {
   userId: number,
   id:number,
@@ -23,6 +23,10 @@ export default function Home() {
   const [slides, setSlides] = useState<any[]>([]) 
   const [dataSearched, setdataSearched] = useState<IUser>()
   const [search, setsearch] = useState('')
+  const [prevBtnDisabled, setprevBtnDisabled] = useState(true)
+  const [nextBtnDisabled, setnextBtnDisabled] = useState(true)
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
+  const [selectedIndex, setSelectedIndex] = useState(0)
   useEffect(() => {
     axios
       .get("https://jsonplaceholder.typicode.com/photos")
@@ -39,6 +43,31 @@ export default function Home() {
      console.log(response.data)
     });
   }
+  const options: EmblaOptionsType = { align:'start', containScroll: false }
+  const [emblaRef, emblaApi] = useEmblaCarousel(options)
+  const scrollPrev = useCallback(
+    () => emblaApi && emblaApi.scrollPrev(),
+    [emblaApi]
+  )
+  const scrollNext = useCallback(
+    () => emblaApi && emblaApi.scrollNext(),
+    [emblaApi]
+  )
+  const scrollTo = useCallback(
+    (index: number) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi]
+  )
+
+  const onInit = useCallback((emblaApi: EmblaCarouselType) => {
+    setScrollSnaps(emblaApi.scrollSnapList())
+  }, [])
+
+  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+    setprevBtnDisabled(!emblaApi.canScrollPrev())
+    setnextBtnDisabled(!emblaApi.canScrollNext())
+  }, [])
+
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
     <>
@@ -54,9 +83,9 @@ height={40}
 <h1  className=' text-xl text-blue-600 pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
 <button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
 </header>
-<section className=' w-3/4'>
+<section className=' w-full'>
 <motion.div
-    className=" w-1/3 h-auto  rounded-lg  ml- mt-20 bg-gradient-to-r from-cyan-500 to-white ml-ml-70  items-center border-r-4 border-blue-900 absolute z-50"
+    className="  absolute z-50 w-72  top-30 right-2"
     initial={{ scale: 0 }}
     animate={animate===true ?{  scale: 1 } : ''}
     transition={{
@@ -65,22 +94,40 @@ height={40}
       damping: 20
     }}
   >
-    <Menu/>
+    <Menu />
   </motion.div>
-  <Carousels loop>
-              {/* use object-cover + fill since we don't know the height and width of the parent */}
-              {slides.map((slide) => (
-  <div key={slide.id}  className=" w-full h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900  rounded-lg ">
+  <div className=''>
+  <div ref={emblaRef} className='l'>
+    <div  className="flex">
+  {slides.map((slide) => (
+  <div key={slide.id}  className=" w-3/4 h-64 border-4 bg-gradient-to-r from-orange-500 to-blue-900  rounded-lg ">
     <Image src= {slide.url} alt='' width={100} height={20}   />
-    <h1  className=" text-red-950  w-32 ">{slide.title} </h1>
+    <h1  className=" text-red-950   w-56 ">{slide.title} </h1>
     </div>
         ))}
-        </Carousels>
+           <div className="  absolute flex items-center z-50">
+          <PrevButton onClick={scrollPrev} disabled={prevBtnDisabled} />
+          <NextButton onClick={scrollNext} disabled={nextBtnDisabled} />
+        </div>
+        <div className="">
+        {scrollSnaps.map((_, index) => (
+          <DotButton
+            key={index}
+            onClick={() => scrollTo(index)}
+            className={'embla__dot'.concat(
+              index === selectedIndex ? ' embla__dot--selected' : ''
+            )}
+          />
+        ))}
+      </div>
+            </div>
+  </div>
+  </div>
 </section>
 <section className='w-full h-96 bg-gradient-to-r from-blue-500 to-blue-900 to-white items-center '>
 <h1 className=' text-center  font-extrabold text-black text-xl	'> Найди конкретный проект нужный именно тебе </h1>
-<input  className=' w-64 rounded-lg  h-8 bg- text-center ml-ml-40 mt-3' placeholder='Введите название проекта' value={search}  onChange={(e)=>{setsearch(e.target.value)}}/>
-<button type="submit" onClick={searchIt}>Поиск</button>
+<input  className='  ml-14 w-80 rounded-lg  h-8 bg- text-center  sm:ml-20 md:ml-64 max-w-sm:ml-40 min[200]:ml-0 min-[400]:ml-8 lg:ml-96  max-[300]:ml-2 ' placeholder='Введите название проекта' value={search}  onChange={(e)=>{setsearch(e.target.value)
+   searchIt()}}/>
 {
 dataSearched == null ? <h1 className=' text-center  font-extrabold text-black text-xl'>Пока ничего не найдено</h1> :
   <div key={dataSearched.id}  className="  w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900 ">
