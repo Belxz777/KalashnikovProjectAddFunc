@@ -106,8 +106,8 @@ height={40}
 <section className=' w-full  bg-[url("../images&svg/nero.jpg")]  '> 
 <motion.div
     className="  absolute z-20 w-72 h-80  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
-    initial={{ x: -100 }}
-    animate={animate===true ?{  x: 100 } : ''}
+    initial={{ x: 100 }}
+    animate={animate===true ?{  x: -100 } : ''}
     transition={{
       type: "spring",
       stiffness: 260,
@@ -125,9 +125,9 @@ height={40}
     {load ?
 
   <div ref={emblaRef} className='l'>
-    <div  className="flex  gap-x-1     " >
+    <div  className="flex  gap-x-1 transform  rotate-x-45  rotate-y-45    " >
   {slides.map((slide) => (
-  <div key={slide.id}  className=" w-3/4 h-64 bg-white hover:bg-slate-300  rounded-lg  ">
+  <div key={slide.id}  className=" w-3/4 h-64 bg-white hover:bg-slate-300  rounded-lg   shadow-xl ">
     <Image src= {slide.url} alt='' width={100} height={20}  className=' pl-2 pt-2 ' />
     <h1  className=" font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans w-80 ">{slide.title} </h1>
     </div>
