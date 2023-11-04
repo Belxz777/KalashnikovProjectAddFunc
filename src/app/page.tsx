@@ -21,6 +21,7 @@ interface IUser {
 export default function Home() {
   const [animate, setanimate] = useState(false)
   const [slides, setSlides] = useState<any[]>([]) 
+  const [blocks, setBlocks] = useState<any[]>([])
   const [dataSearched, setdataSearched] = useState<IUser>()
   const [search, setsearch] = useState('')
   const [prevBtnDisabled, setprevBtnDisabled] = useState(true)
@@ -31,7 +32,15 @@ export default function Home() {
     axios
       .get("https://jsonplaceholder.typicode.com/photos")
       .then((response) => {
-        setSlides(response.data.slice(-80));
+        setSlides(response.data.slice(-3));
+        console.log(response.data.slice(-90))
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/photos")
+      .then((response) => {
+        setBlocks(response.data.slice(-6));
         console.log(response.data.slice(-90))
       });
   }, []);
@@ -96,12 +105,17 @@ height={40}
   >
     <Menu />
   </motion.div>
-  <div className=''>
+
+    <div className='text-center'>
+      Лучшие проекты
+    </div>
+    {/*начало блоков карусели */}
+  <div className='w-screen bg-orange-600 pb-6 pt-6'>
   <div ref={emblaRef} className='l'>
-    <div  className="flex">
+    <div  className="flex  gap-x-1  " >
   {slides.map((slide) => (
-  <div key={slide.id}  className=" w-3/4 h-64 border-4 bg-gradient-to-r from-orange-500 to-blue-900  rounded-lg ">
-    <Image src= {slide.url} alt='' width={100} height={20}   />
+  <div key={slide.id}  className=" w-3/4 h-64 bg-gray-700  rounded-2xl ">
+    <Image src= {slide.url} alt='' width={130} height={20}  className=' pl-2 pt-2 ' />
     <h1  className=" text-red-950   w-56 ">{slide.title} </h1>
     </div>
         ))}
@@ -124,6 +138,8 @@ height={40}
   </div>
   </div>
 </section>
+
+
 <section className='w-full h-96 bg-gradient-to-r from-blue-500 to-blue-900 to-white items-center '>
 <h1 className=' text-center  font-extrabold text-black text-xl	'> Найди конкретный проект нужный именно тебе </h1>
 <input  className='  ml-14 w-80 rounded-lg  h-8 bg- text-center  sm:ml-20 md:ml-64 max-w-sm:ml-40 min[200]:ml-0 min-[400]:ml-8 lg:ml-96  max-[300]:ml-2 ' placeholder='Введите название проекта' value={search}  onChange={(e)=>{setsearch(e.target.value)
@@ -137,6 +153,32 @@ dataSearched == null ? <h1 className=' text-center  font-extrabold text-black te
     </div>
 }
 </section>
+<section>
+  <div className='w-screen bg-orange-600 '>
+    <div   className='l'>
+      <div  className="flex gap-x-1 pb-6 pt-6 ">
+        {blocks.map((block) => (
+        <div className="w-3/4 h-64 bg-gray-700  rounded-2xl  ">
+          <Image src= {block.url} alt='' width={130} height={20}  className=' pl-2 pt-2 '  />
+          <h1  className=" text-red-950   w-56 ">{block.title} </h1>
+        </div>
+              ))}
+                  
+          
+      </div>
+    </div>
+  </div>
+</section>
+   <div className='bg-gray-100 w-screen'>
+        <div className="grid grid-rows-2 grid-flow-col gap-4  place-content-around  h-48 bg-gray-100 w-screen">
+          <div>Мероприятия</div>
+          <div>Блог</div>
+          <div>Об академии</div>
+          <div>Направления</div>
+          <div>Контакты</div>
+          <div>Лицензионное соглашение</div>
+        </div>
+    </div>
 </>
   )
 }
