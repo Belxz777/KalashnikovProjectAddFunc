@@ -12,10 +12,10 @@ const Menu = (props: Props) => {
   };
 
   return (
-    <div className="relative z-10  bg-white rounded-lg shadow-md   ">
+    <div className="relative z-50  bg-[url('https://www.kindacode.com/wp-content/uploads/2022/06/night-sky.jpeg')] bg-cover bg-center blur-md  rounded-lg shadow-md   ">
     <button
       onClick={handleToggleMenu}
-      className="py-2 px-4 bg-orange-400 hover:bg-fuchsia-600 "
+      className="py-2 text-center bg-orange-400 hover:bg-fuchsia-600 "
     >
       Искать по направлению
     </button>

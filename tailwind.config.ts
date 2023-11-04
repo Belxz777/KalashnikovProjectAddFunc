@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss'
-
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -18,14 +17,17 @@ const config: Config = {
         'pl-10': '10%',
       },
       margin:{
-'ml-40':'35%'
+'ml-40':'35%',
+'mx-25': '20%',
+'mr-25':'25%',
+
       },
       borderColor:{
         'cool':'  bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500'
       },
       fontFamily : {
         sans: ['var(--font-raleway)'],
-      }
+      },
     },
   },
   plugins: [],

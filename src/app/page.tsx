@@ -7,10 +7,18 @@ import BurgerMenuIcon from '@/reusable/BurgerMenuLogo'
 import CrossMenu from '@/reusable/Cross'
 import Menu from '@/reusable/Menu'
 import useKeenSlider from 'keen-slider'
+
 import Carousel from 'embla-carousel'
 import useEmblaCarousel, { EmblaOptionsType,EmblaCarouselType } from "embla-carousel-react";
 import { useEffect } from 'react'
 import axios from 'axios'
+import verf from '../images&svg/pngwing.com (4).png'
+import izmashlogo from '../images&svg/2197058.png'
+import kalashLogo from '../images&svg/kalashLogo.png'
+import nintynine from '../images&svg/99png.png'
+import ytlogo from '../images&svg/pngwing.com.png'
+import vklogo from '../images&svg/pngwing.com (1).png'
+import Logo from '@/reusable/Logo'
 import { DotButton,PrevButton,NextButton } from '@/reusable/Dots&Arrows'
 interface IUser {
   userId: number,
@@ -28,11 +36,13 @@ export default function Home() {
   const [nextBtnDisabled, setnextBtnDisabled] = useState(true)
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [load, setload] = useState(true)
   useEffect(() => {
     axios
       .get("https://jsonplaceholder.typicode.com/photos")
       .then((response) => {
-        setSlides(response.data.slice(-3));
+        //setSlides(response.data.slice(-80));
+        setload(true)
         console.log(response.data.slice(-90))
       });
   }, []);
@@ -40,7 +50,8 @@ export default function Home() {
     axios
       .get("https://jsonplaceholder.typicode.com/photos")
       .then((response) => {
-        setBlocks(response.data.slice(-6));
+        setSlides(response.data.slice(-80));
+
         console.log(response.data.slice(-90))
       });
   }, []);
@@ -80,23 +91,23 @@ export default function Home() {
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
     <>
-<header className=' bg-white w-full  h-24 flex justify-start   border-b-4 border-blue-600'>
+<header className=' bg-white w-full  h-24 flex justify-start   border-b-4    ' >
 <Image
 alt= ' '
 width= {90}
 height={40}
  src='https://i.pinimg.com/originals/7b/07/62/7b0762f25df8d3cf66c8c1c21b0c712c.png'
- className=' pl-1 pt-1 select-none'>
+ className=' pl-1 pt-1 select-none '>
 
 </Image>
-<h1  className=' text-xl text-blue-600 pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
+<h1  className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
 <button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
 </header>
-<section className=' w-full'>
+<section className=' w-full  bg-[url("../images&svg/nero.jpg")]  '> 
 <motion.div
-    className="  absolute z-50 w-72  top-30 right-2"
-    initial={{ scale: 0 }}
-    animate={animate===true ?{  scale: 1 } : ''}
+    className="  absolute z-20 w-72 h-80  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
+    initial={{ x: -100 }}
+    animate={animate===true ?{  x: 100 } : ''}
     transition={{
       type: "spring",
       stiffness: 260,
@@ -106,17 +117,19 @@ height={40}
     <Menu />
   </motion.div>
 
-    <div className='text-center'>
+    <div className='text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans '>
       Лучшие проекты
     </div>
+    <div className='w-screen  pb-6 pt-6'>
     {/*начало блоков карусели */}
-  <div className='w-screen bg-orange-600 pb-6 pt-6'>
+    {load ?
+
   <div ref={emblaRef} className='l'>
-    <div  className="flex  gap-x-1  " >
+    <div  className="flex  gap-x-1     " >
   {slides.map((slide) => (
-  <div key={slide.id}  className=" w-3/4 h-64 bg-gray-700  rounded-2xl ">
-    <Image src= {slide.url} alt='' width={130} height={20}  className=' pl-2 pt-2 ' />
-    <h1  className=" text-red-950   w-56 ">{slide.title} </h1>
+  <div key={slide.id}  className=" w-3/4 h-64 bg-white hover:bg-slate-300  rounded-lg  ">
+    <Image src= {slide.url} alt='' width={100} height={20}  className=' pl-2 pt-2 ' />
+    <h1  className=" font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans w-80 ">{slide.title} </h1>
     </div>
         ))}
            <div className="  absolute flex items-center z-50">
@@ -136,16 +149,32 @@ height={40}
       </div>
             </div>
   </div>
+
+  :
+  <motion.div
+    className=" w-52 h-52 bg-slate-950 "
+    initial={{ scale: 0 }}
+    animate={{ scale: [1, 2, 2, 1, 1],
+      rotate: [0, 0, 180, 180, 0],
+      borderRadius: ["0%", "0%", "50%", "50%", "0%"]}}
+    transition={{
+      duration: 2,
+        ease: "easeInOut",
+        times: [0, 0.2, 0.5, 0.8, 1],
+        repeat: Infinity,
+        repeatDelay: 1
+    }}
+  ></motion.div>}
   </div>
 </section>
 
 
-<section className='w-full h-96 bg-gradient-to-r from-blue-500 to-blue-900 to-white items-center '>
-<h1 className=' text-center  font-extrabold text-black text-xl	'> Найди конкретный проект нужный именно тебе </h1>
-<input  className='  ml-14 w-80 rounded-lg  h-8 bg- text-center  sm:ml-20 md:ml-64 max-w-sm:ml-40 min[200]:ml-0 min-[400]:ml-8 lg:ml-96  max-[300]:ml-2 ' placeholder='Введите название проекта' value={search}  onChange={(e)=>{setsearch(e.target.value)
+<section className='w-full h-96 bg-[url("../images&svg/nero.jpg")] items-center '>
+<h1 className=' text-center  font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans text-xl	'> Найди конкретный проект нужный именно тебе </h1>
+<input  className='  mx-8 w-80 rounded-lg  h-8 bg- text-center  sm:ml-20 md:mx-56 max-w-sm:ml-40  lg:ml-96   ' placeholder='Введите название проекта' value={search}  onChange={(e)=>{setsearch(e.target.value)
    searchIt()}}/>
 {
-dataSearched == null ? <h1 className=' text-center  font-extrabold text-black text-xl'>Пока ничего не найдено</h1> :
+dataSearched == null ? <h1 className=' text-center  font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans text-xl'>Пока ничего не найдено</h1> :
   <div key={dataSearched.id}  className="  w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900 ">
     <h1>{dataSearched.userId}</h1>
     <h1  className=" text-red-950  w-32 ">{dataSearched.title} </h1>
@@ -153,32 +182,78 @@ dataSearched == null ? <h1 className=' text-center  font-extrabold text-black te
     </div>
 }
 </section>
-<section>
-  <div className='w-screen bg-orange-600 '>
-    <div   className='l'>
-      <div  className="flex gap-x-1 pb-6 pt-6 ">
-        {blocks.map((block) => (
-        <div className="w-3/4 h-64 bg-gray-700  rounded-2xl  ">
-          <Image src= {block.url} alt='' width={130} height={20}  className=' pl-2 pt-2 '  />
-          <h1  className=" text-red-950   w-56 ">{block.title} </h1>
-        </div>
-              ))}
-                  
-          
-      </div>
+   <footer className='w-full h-80  sm:block md:block '>
+    <div className='w-full h-3/4  lg:flex xl:flex 2xl:flex'>
+    <div className='   font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans bg-stone-500 w-full  h-0.5/6   lg:w-1/3 lg:h-3/4 2xl:w-1/3 2xl:h-3/4 xl:w-1/3 xl:h-3/4  border-b-2 border-black'>
+      <ul>
+        <li className='text-2xl  px-10 2xl:text-center 2xl:px-0' >
+          Мероприятия 
+        </li>
+        <li className='text-2xl  px-10  2xl:text-center 2xl:px-0' >
+          Блог
+        </li>
+        <li className='text-2xl px-10 2xl:text-center 2xl:px-0' >
+          Контакты
+        </li>
+      </ul>
     </div>
-  </div>
-</section>
-   <div className='bg-gray-100 w-screen'>
-        <div className="grid grid-rows-2 grid-flow-col gap-4  place-content-around  h-48 bg-gray-100 w-screen">
-          <div>Мероприятия</div>
-          <div>Блог</div>
-          <div>Об академии</div>
-          <div>Направления</div>
-          <div>Контакты</div>
-          <div>Лицензионное соглашение</div>
-        </div>
+    <div className='  font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans  bg-stone-500  w-full h-4.5/6   lg:w-1/3 lg:h-4/4 2xl:w-1/3 2xl:h-4/4 xl:w-1/3 xl:h-4/4 px-10 border-l-2 border-l-black border-4  border-r-2 border-r-black '>
+      <h2 className=' text-2xl '>Об Академии </h2>
+      <ul >
+        <li >
+        Достижения 
+        </li>
+        <li>
+       Как поступить
+        </li>
+        <li>
+          Сведения
+        </li>
+      </ul>
+      <h2 className=' text-2xl'>Направления</h2>
+      <ul >
+        <li >
+        Детско-Юношеский Технопарк
+        </li>
+        <li>
+        Профессиональное обучение взрослых
+        </li>
+        <li>
+        Дополнительное образование взрослых
+        </li>
+      </ul>
     </div>
+    <div className='  bg-stone-500 w-full h-3.5/6   lg:w-1/3 lg:h-3/4 2xl:w-1/3 2xl:h-3/4 xl:w-1/3 xl:h-3/4   font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans  pl-7 border-b-2 border-black '>
+<h2 className=' text-2xl'>Приемная коммисия</h2>
+<p className=''> 8 982 124 97 32</p>
+<p className=' '> romanbelyh436@gmail.com</p>
+<div className='flex pr-14 pb-4'>
+  <Image src={ytlogo} width={50 } height={30} alt='youtube' >
+
+  </Image>
+  <Image src={vklogo} width={50 } height={30} alt='youtube' className='ml-2'>
+
+</Image>
+</div>
+    </div>
+    </div>
+    <div className=' mx-0 inline-flex  mt-72 2xl:mt-5 xl:mt-5  sm:mt-52 lg:mt-12 md:mt-56 '>
+    <Image src={kalashLogo} width={130 } height={10} alt='youtube' className='mr-mr-25'>
+
+</Image>
+<Image src={nintynine} width={100 } height={10} alt='youtube' className='mx-mx-25'>
+
+</Image>
+<Image src={izmashlogo} width={130 } height={10} alt='youtube' className=' mx-mx-25'>
+
+</Image>
+<Image src={verf} width={100 } height={30} alt='youtube' className=' mx-mx-25'>
+
+</Image>
+
+
+    </div>
+   </footer>
 </>
   )
 }
