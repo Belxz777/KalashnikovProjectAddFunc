@@ -3,15 +3,13 @@ import React from 'react'
 import axios from 'axios'
 import { useState,useEffect,useRef } from 'react'
 import { data } from 'autoprefixer'
-type Props = {}
-interface UserData {
-userSearch:string
-}
-const page = (props: Props) => {
-  const [userSearch, setUserSearch] = useState("");
 
+const page = () => {
+  const [userSearch, setUserSearch] = useState("");
+const [image, setimage] = useState()
+const [data,setData] = useState([])
   // Holds a reference the current input field value
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef(null);
   
   // Makes an API request whenever the search state is updated
   useEffect(() => {
@@ -28,21 +26,22 @@ const page = (props: Props) => {
         const query = `http://localhost:10004/wp-json/wp/v2/posts?search=${userSearch}`;
   
         axios.get(query)
-          .then((response):any=> {
+          .then((response)=> {
             const post = response.data[0]
       console.log(response.data)
             console.log(data)
+            setData(post)
             const content = post.content.rendered;
             const imageUrlMatch = content.match(/src="([^"]+)"/); // Находим URL изображения
             const imageUrl = imageUrlMatch ? imageUrlMatch[1] : null; // Получаем URL изображения (если оно было найдено)
-            
+            setimage(imageUrl)
             // Удаляем HTML-теги, кроме <p>
             const strippedContent = content.replace(/(<(?!p\b)[^>]+>)|(\n)/g, '');
         
             console.log('URL изображения:', imageUrl);
 
-            alert(imageUrl)
-            alert(strippedContent)
+          // alert(imageUrl)
+            //alert(strippedContent)
             console.log('Текст без тегов:', strippedContent);
             // Execute next steps
           })
@@ -77,15 +76,13 @@ const page = (props: Props) => {
   ref={inputRef} // <--- ref grabs the input element 
 />
 <button onClick={getData}></button>
-  
-
    </div>
     {
-        dataSearched == null ? null :
-          <div key={dataSearched.id}  className="  w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900 ">
-            <h1>{dataSearched.userId}</h1>
-            <h1  className=" text-red-950  w-32 ">{dataSearched.title} </h1>
-            <p >{dataSearched.body}</p>
+        data == null ? null :
+          <div key={data.id}  className="  w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900 ">
+            <h1>{data.id}</h1>
+            <h1  className=" text-red-950  w-32 ">{data.id}</h1>
+            <p >{data.id}</p>
             </div>
         }
         </main>
