@@ -168,14 +168,21 @@ height={40}
   </div>
 </section>
 
-
-<main className='w-full h-96  flex   items-center   justify-center  bg-[url("../images&svg/nero.jpg")]  '>
+    <main className='w-full h-96  flex   items-center   justify-center  bg-[url("../images&svg/nero.jpg")]  '>
   <div className='flex flex-wrap flex-col'>
 <h1 className=' text-center  font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans text-xl	'> Найди конкретный проект нужный именно тебе </h1>
-<input  className='  mx-8 w-80 rounded-lg  h-8  text-center  ' placeholder='Введите название проекта' value={search}  onChange={(e)=>{setsearch(e.target.value)
-   searchIt()}} type='search ' name='search' id='search'/>
+<input  className='  mx-8 w-80 rounded-lg  h-8  text-center  ' placeholder='Введите название проекта' type='search ' name='search' id='search' value={search}  onChange={(e)=>{setsearch(e.target.value)
+   searchIt()}}/>
    </div>
-</main>
+    {
+        dataSearched == null ? null :
+          <div key={dataSearched.id}  className="  w-1/3  h-64 bg-white hover:bg-slate-300  rounded-lg   shadow-xl ml-16 ">
+            <h1>{dataSearched.userId}</h1>
+            <h1  className=" text-red-950  w-32 ">{dataSearched.title} </h1>
+            <p >{dataSearched.body}</p>
+            </div>
+        }
+        </main>
    <footer className='w-full h-80  sm:block md:block '>
     <div className='w-full h-3/4  lg:flex xl:flex 2xl:flex'>
     <div className='   font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans bg-stone-500 w-full  h-0.5/6   lg:w-1/3 lg:h-3/4 2xl:w-1/3 2xl:h-3/4 xl:w-1/3 xl:h-3/4  border-b-2 border-black'>
