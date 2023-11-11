@@ -2,14 +2,24 @@
 import React from 'react'
 import axios from 'axios'
 import { useState,useEffect,useRef } from 'react'
-import { data } from 'autoprefixer'
 
 const page = () => {
   const [userSearch, setUserSearch] = useState("");
 const [image, setimage] = useState()
-const [data,setData] = useState([])
+type Post = { 
+  id: number; 
+  title: { 
+    rendered: string; 
+  }; 
+  content: { 
+    rendered: string; 
+  }; 
+}; 
+const [data,setData] = useState<Post>() 
+// Holds a reference the current input field value 
+const inputRef = useRef(null);
+
   // Holds a reference the current input field value
-  const inputRef = useRef(null);
   
   // Makes an API request whenever the search state is updated
   useEffect(() => {
@@ -77,15 +87,15 @@ const [data,setData] = useState([])
 />
 <button onClick={getData}></button>
    </div>
-    {
-        data == null ? null :
-          <div key={data.id}  className="  w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900 ">
-            <h1>{data.id}</h1>
-            <h1  className=" text-red-950  w-32 ">{data.id}</h1>
-            <p >{data.id}</p>
-            </div>
-        }
-        </main>
+   { 
+        data == null ? null : 
+        <div key={data.id}  className="w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900"> 
+        <h1>{data.id}</h1> 
+        <h1 className="text-red-950 w-32">{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
+        <p>{data.id}</p> 
+      </div> 
+        } 
+        </main> 
         </>
   )
 }

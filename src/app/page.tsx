@@ -1,16 +1,12 @@
 'use client'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useState,useCallback } from 'react'
-import burgerImage from '../images&svg/2023-10-28_19-48-16.png'
+import { useState,useCallback,useEffect,useRef } from 'react'
 import BurgerMenuIcon from '@/reusable/BurgerMenuLogo'
 import CrossMenu from '@/reusable/Cross'
 import Menu from '@/reusable/Menu'
-import useKeenSlider from 'keen-slider'
-
 import Carousel from 'embla-carousel'
 import useEmblaCarousel, { EmblaOptionsType,EmblaCarouselType } from "embla-carousel-react";
-import { useEffect } from 'react'
 import axios from 'axios'
 import verf from '../images&svg/pngwing.com (4).png'
 import izmashlogo from '../images&svg/2197058.png'
@@ -55,14 +51,67 @@ export default function Home() {
         console.log(response.data.slice(-90))
       });
   }, []);
-  const searchIt= () =>{
-    axios
-    .get(`https://jsonplaceholder.typicode.com/posts/${search}`)
-    .then((response) => {
-     setdataSearched(response.data)
-     console.log(response.data)
-    });
-  }
+  const [userSearch, setUserSearch] = useState("");
+  const [image, setimage] = useState(null)
+  type Post = { 
+    id: number; 
+    title: { 
+      rendered: string; 
+    }; 
+    content: { 
+      rendered: string; 
+    }; 
+  }; 
+  const [data,setData] = useState<Post>() 
+  // Holds a reference the current input field value 
+  const inputRef = useRef(null);
+  
+    // Holds a reference the current input field value
+    
+    // Makes an API request whenever the search state is updated
+    useEffect(() => {
+    
+      // Debounce Effect
+      // Code within the setTimeout runs every 0.5 seconds
+      const timer = setTimeout(() => {
+    
+        // 1. The conditional checks the input's current value
+        // 2. It compares it against the userSearch state
+        // 3. If they match then the user has stopped typing and the API is ready to be called 
+    
+        if(userSearch ) {
+          const query = `http://localhost:10004/wp-json/wp/v2/posts?search=${userSearch}`;
+    
+          axios.get(query)
+            .then((response)=> {
+              const post = response.data[0]
+        console.log(response.data)
+              console.log(data)
+              setData(post)
+              const content = data.content.rendered
+              const imageUrlMatch = content.match(/src="([^"]+)"/); // Находим URL изображения
+              const imageUrl = imageUrlMatch ? imageUrlMatch[1] : null; // Получаем URL изображения (если оно было найдено)
+              setimage(imageUrl )
+              // Удаляем HTML-теги, кроме <p>
+              const strippedContent = content.replace(/(<(?!p\b)[^>]+>)|(\n)/g, '');
+          
+              console.log('URL изображения:', imageUrl);
+  
+            // alert(imageUrl)
+              //alert(strippedContent)
+              console.log('Текст без тегов:', strippedContent);
+              // Execute next steps
+            })
+        }
+      }, 500)
+    
+      // Every time the useEffect runs it creates a new setTimeout function
+      // Returning this cleanup function will run before each new render and remove the old timer
+      return () => {
+        clearTimeout(timer)
+      }  
+    
+    }, [userSearch, inputRef]);
   const options: EmblaOptionsType = { align:'start', containScroll: false }
   const [emblaRef, emblaApi] = useEmblaCarousel(options)
   const scrollPrev = useCallback(
@@ -168,21 +217,25 @@ height={40}
   </div>
 </section>
 
-    <main className='w-full h-96  flex   items-center   justify-center  bg-[url("../images&svg/nero.jpg")]  '>
+<main className='w-full h-96  flex   items-center   justify-center  bg-[url("../images&svg/nero.jpg")]  '>
   <div className='flex flex-wrap flex-col'>
 <h1 className=' text-center  font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans text-xl	'> Найди конкретный проект нужный именно тебе </h1>
-<input  className='  mx-8 w-80 rounded-lg  h-8  text-center  ' placeholder='Введите название проекта' type='search ' name='search' id='search' value={search}  onChange={(e)=>{setsearch(e.target.value)
-   searchIt()}}/>
+  <input
+   className='  mx-8 w-80 rounded-lg  h-8  text-center  ' placeholder='Введите название проекта' type='search ' name='search' id='search'
+  value={userSearch}  onChange={(e)=>{setUserSearch(e.target.value)
+  }}
+  ref={inputRef} // <--- ref grabs the input element 
+/>
    </div>
-    {
-        dataSearched == null ? null :
-          <div key={dataSearched.id}  className="  w-1/3  h-64 bg-white hover:bg-slate-300  rounded-lg   shadow-xl ml-16 ">
-            <h1>{dataSearched.userId}</h1>
-            <h1  className=" text-red-950  w-32 ">{dataSearched.title} </h1>
-            <p >{dataSearched.body}</p>
-            </div>
-        }
-        </main>
+   { 
+        data == null ? null : 
+        <div key={data.id}  className="w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900"> 
+        <h1>{data.id}</h1> 
+        <h1 className="text-red-950 w-32">{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
+        <p>{data.id}</p> 
+      </div> 
+        } 
+        </main> 
    <footer className='w-full h-80  sm:block md:block '>
     <div className='w-full h-3/4  lg:flex xl:flex 2xl:flex'>
     <div className='   font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans bg-stone-500 w-full  h-0.5/6   lg:w-1/3 lg:h-3/4 2xl:w-1/3 2xl:h-3/4 xl:w-1/3 xl:h-3/4  border-b-2 border-black'>
@@ -238,7 +291,7 @@ height={40}
 </div>
     </div>
     </div>
-    <div className=' mx-0 inline-flex  mt-72 2xl:mt-5 xl:mt-5  sm:mt-52 lg:mt-12 md:mt-56 '>
+    <div className=' mx-0 inline-flex  mt-72 2xl:mt-5 xl:mt-5  sm:mt-56 lg:mt-12 md:mt-72 '>
     <Image src={kalashLogo} width={130 } height={10} alt='youtube' className='mr-mr-25'>
 
 </Image>
