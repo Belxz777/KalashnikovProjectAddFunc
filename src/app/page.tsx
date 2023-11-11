@@ -84,11 +84,12 @@ export default function Home() {
     
           axios.get(query)
             .then((response)=> {
+              if(response.data !== null){
               const post = response.data[0]
         console.log(response.data)
               console.log(data)
               setData(post)
-              const content = data.content.rendered
+              const content = post.content.rendered
               const imageUrlMatch = content.match(/src="([^"]+)"/); // Находим URL изображения
               const imageUrl = imageUrlMatch ? imageUrlMatch[1] : null; // Получаем URL изображения (если оно было найдено)
               setimage(imageUrl )
@@ -101,6 +102,7 @@ export default function Home() {
               //alert(strippedContent)
               console.log('Текст без тегов:', strippedContent);
               // Execute next steps
+              }
             })
         }
       }, 500)
@@ -139,7 +141,7 @@ export default function Home() {
 
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
-    <>
+    < >
 <header className=' bg-white w-full  h-24 flex justify-start   border-b-4    ' >
 <Image
 alt= ' '
@@ -152,7 +154,7 @@ height={40}
 <h1  className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
 <button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
 </header>
-<section className=' w-full  bg-[url("../images&svg/nero.jpg")]  '> 
+<section className=' w-full  bg-[url("../images&svg/nero.jpg")]   overflow-hidden'> 
 <motion.div
     className="  absolute z-20 w-72 h-80  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
     initial={{ x: 100 }}
@@ -229,10 +231,13 @@ height={40}
    </div>
    { 
         data == null ? null : 
-        <div key={data.id}  className="w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900"> 
-        <h1>{data.id}</h1> 
-        <h1 className="text-red-950 w-32">{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
-        <p>{data.id}</p> 
+        <div key={data.id}  className="w-2/4  h-full bg-white hover:bg-slate-300  rounded-lg   shadow-xl  ml-10"> 
+        {
+          data.content.rendered
+        }
+        <h1 className=' ml-ml-40'> Проект № {data.id}</h1> 
+        <h1 className="text-red-950  text-center">{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
+        <p className=' text-blue-600'>{data.content.rendered.replace(/(<(?!p\b)[^>]+>)|(\n)/g, '')}</p> 
       </div> 
         } 
         </main> 
