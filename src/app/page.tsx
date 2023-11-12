@@ -156,7 +156,7 @@ height={40}
 </header>
 <section className=' w-full  bg-[url("../images&svg/nero.jpg")]   overflow-hidden'> 
 <motion.div
-    className="  absolute z-20 w-72 h-80  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
+    className="  absolute z-20 w-72  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
     initial={{ x: 100 }}
     animate={animate===true ?{  x: -100 } : ''}
     transition={{
