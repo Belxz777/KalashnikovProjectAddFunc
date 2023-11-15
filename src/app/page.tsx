@@ -114,30 +114,9 @@ export default function Home() {
       }  
     
     }, [userSearch, inputRef]);
-  const options: EmblaOptionsType = { align:'start', containScroll: false }
+  const options: EmblaOptionsType = { align:'start', containScroll: false  }
   const [emblaRef, emblaApi] = useEmblaCarousel(options)
-  const scrollPrev = useCallback(
-    () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi]
-  )
-  const scrollNext = useCallback(
-    () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi]
-  )
-  const scrollTo = useCallback(
-    (index: number) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
-  )
 
-  const onInit = useCallback((emblaApi: EmblaCarouselType) => {
-    setScrollSnaps(emblaApi.scrollSnapList())
-  }, [])
-
-  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setSelectedIndex(emblaApi.selectedScrollSnap())
-    setprevBtnDisabled(!emblaApi.canScrollPrev())
-    setnextBtnDisabled(!emblaApi.canScrollNext())
-  }, [])
 
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
@@ -183,21 +162,6 @@ height={40}
     <h1  className=" font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans w-80 ">{slide.title} </h1>
     </div>
         ))}
-           <div className="  absolute flex items-center z-50">
-          <PrevButton onClick={scrollPrev} disabled={prevBtnDisabled} />
-          <NextButton onClick={scrollNext} disabled={nextBtnDisabled} />
-        </div>
-        <div className="">
-        {scrollSnaps.map((_, index) => (
-          <DotButton
-            key={index}
-            onClick={() => scrollTo(index)}
-            className={'embla__dot'.concat(
-              index === selectedIndex ? ' embla__dot--selected' : ''
-            )}
-          />
-        ))}
-      </div>
             </div>
   </div>
 

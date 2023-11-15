@@ -17,14 +17,14 @@ const Menu = (props: Props) => {
       onClick={handleToggleMenu}
       className="py-2 text-center bg-orange-400 hover:bg-fuchsia-600 "
     >
-      Искать по направлению
+      Направления
     </button>
 
     {isOpen && (
       <>
         <ul className="py-2">
           <li className="px-4 py-2 hover:bg-red-200  inline">
-            <a href="#" className=" flex pr-4">
+            <a href="/IT" className=" flex pr-4">
               IT   <BsDisplay/>
             </a>
           </li>
