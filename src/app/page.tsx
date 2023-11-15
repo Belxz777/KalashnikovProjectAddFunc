@@ -16,6 +16,7 @@ import ytlogo from '../images&svg/pngwing.com.png'
 import vklogo from '../images&svg/pngwing.com (1).png'
 import Logo from '@/reusable/Logo'
 import { DotButton,PrevButton,NextButton } from '@/reusable/Dots&Arrows'
+import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 interface IUser {
   userId: number,
   id:number,
@@ -39,7 +40,6 @@ export default function Home() {
       .then((response) => {
         //setSlides(response.data.slice(-80));
         setload(true)
-        console.log(response.data.slice(-90))
       });
   }, []);
   useEffect(() => {
@@ -47,8 +47,6 @@ export default function Home() {
       .get("https://jsonplaceholder.typicode.com/photos")
       .then((response) => {
         setSlides(response.data.slice(-80));
-
-        console.log(response.data.slice(-90))
       });
   }, []);
   const [userSearch, setUserSearch] = useState("");
@@ -62,62 +60,85 @@ export default function Home() {
       rendered: string; 
     }; 
   }; 
-  const [data,setData] = useState<Post>() 
-  // Holds a reference the current input field value 
+  const [data,setData] = useState<Post>() // типизация для поста
+  // Holds a reference the current input field value  ссылка реф крч
   const inputRef = useRef(null);
   
     // Holds a reference the current input field value
     
-    // Makes an API request whenever the search state is updated
-    useEffect(() => {
     
-      // Debounce Effect
-      // Code within the setTimeout runs every 0.5 seconds
-      const timer = setTimeout(() => {
-    
-        // 1. The conditional checks the input's current value
-        // 2. It compares it against the userSearch state
-        // 3. If they match then the user has stopped typing and the API is ready to be called 
-    
-        if(userSearch ) {
-          const query = `http://localhost:10004/wp-json/wp/v2/posts?search=${userSearch}`;
-    
-          axios.get(query)
-            .then((response)=> {
-              if(response.data !== null){
-              const post = response.data[0]
-        console.log(response.data)
-              console.log(data)
-              setData(post)
-              const content = post.content.rendered
-              const imageUrlMatch = content.match(/src="([^"]+)"/); // Находим URL изображения
-              const imageUrl = imageUrlMatch ? imageUrlMatch[1] : null; // Получаем URL изображения (если оно было найдено)
-              setimage(imageUrl )
-              // Удаляем HTML-теги, кроме <p>
-              const strippedContent = content.replace(/(<(?!p\b)[^>]+>)|(\n)/g, '');
-          
-              console.log('URL изображения:', imageUrl);
-  
-            // alert(imageUrl)
-              //alert(strippedContent)
-              console.log('Текст без тегов:', strippedContent);
-              // Execute next steps
-              }
-            })
-        }
-      }, 500)
-    
-      // Every time the useEffect runs it creates a new setTimeout function
-      // Returning this cleanup function will run before each new render and remove the old timer
-      return () => {
-        clearTimeout(timer)
-      }  
-    
-    }, [userSearch, inputRef]);
   const options: EmblaOptionsType = { align:'start', containScroll: false  }
   const [emblaRef, emblaApi] = useEmblaCarousel(options)
 
+  const extractDate = (html: string) => {
 
+    const blockquoteRegex = /<blockquote.*?>\s*<p>(.*?)<\/p>\s*<cite>(.*?)<\/cite>\s*<\/blockquote>/;
+    const blockquoteMatch = html.match(blockquoteRegex);
+
+  const blockquoteContentDate= blockquoteMatch ? blockquoteMatch[2] : "";
+
+
+    return blockquoteContentDate
+  };
+  
+  const extractMade = (html: string) => {
+
+    const blockquoteRegex = /<blockquote.*?>\s*<p>(.*?)<\/p>\s*<cite>(.*?)<\/cite>\s*<\/blockquote>/;
+    const blockquoteMatch = html.match(blockquoteRegex);
+
+  const blockquoteContentMade = blockquoteMatch ? blockquoteMatch[1] : "";
+
+
+    return blockquoteContentMade;
+  };
+  const extractImage = (html: string)=> {
+    const imgRegex = /<img[^>]+src="([^">]+)"/;
+  
+    const imgMatch = html.match(imgRegex);
+  
+    const imageUrl:string | StaticImport = imgMatch ? imgMatch[1] : '';
+  
+    return  imageUrl;
+  };
+  const extractText = (html: string)=> {
+    const textRegex = /<p>(.*?)<\/p>/;
+  
+    const textMatch = html.match(textRegex);
+    const text = textMatch ? textMatch[1] : '';
+  
+    return text ;
+  };
+  // Makes an API request whenever the search state is updated
+  useEffect(() => {
+  
+    // Debounce Effect
+    // Code within the setTimeout runs every 0.5 seconds
+    const timer = setTimeout(() => {
+  
+      // 1. The conditional checks the input's current value
+      // 2. It compares it against the userSearch state
+      // 3. If they match then the user has stopped typing and the API is ready to be called 
+  
+      if(userSearch ) {
+        const query = `http://localhost:10004/wp-json/wp/v2/posts?search=${userSearch}`;
+  
+        axios.get(query)
+          .then((response)=> {
+            const post = response.data[0]
+            setData(post)
+            if(data === undefined){
+              return console.log('nothing finded')
+            }
+            else{
+            return console.log('Content is null ')
+            }
+            // Execute next steps
+          })
+      }
+    }, 500)
+    // Clean up effect
+  })
+  
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
     < >
@@ -194,18 +215,24 @@ height={40}
 />
    </div>
    { 
-        data == null ? null : 
-        <div key={data.id}  className="w-2/4  h-full bg-white hover:bg-slate-300  rounded-lg   shadow-xl  ml-10"> 
-        {
-          data.content.rendered
-        }
-        <h1 className=' ml-ml-40'> Проект № {data.id}</h1> 
-        <h1 className="text-red-950  text-center">{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
-        <p className=' text-blue-600'>{data.content.rendered.replace(/(<(?!p\b)[^>]+>)|(\n)/g, '')}</p> 
+        data == null?null : 
+        <div key={data.id}  className="w-2/3 rounded-lg h-full border-4 bg-gradient-to-b from-blue-500 to-teal-500 overflow-y-scroll"> 
+        <h1 className=' font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-blue-900 font-sans text-lg '> Проект № {data.id}</h1> 
+        <Image src= {extractImage(data.content.rendered)} alt='' width={200} height={100}  className=' float-right  pt-2 pr-8  rounded-xl' />
+        <h1 className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-900 font-sans text-xl'>{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
+      <p className='text-white'> {extractText(data.content.rendered)}</p>
+      <blockquote  className='p-4 my-4  bg-gradient-to-t from-blue-500 to-teal-500  border-l-4  border-blue-900 '>
+        <p className='text-white'>
+          {extractMade(data.content.rendered)}
+        </p>
+        <p className='text-white'>
+          {extractDate(data.content.rendered)}
+        </p>
+      </blockquote>
       </div> 
         } 
         </main> 
-   <footer className='w-full h-80  sm:block md:block '>
+   <footer className='w-full h-80  sm:block md:block  '>
     <div className='w-full h-3/4  lg:flex xl:flex 2xl:flex'>
     <div className='   font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans bg-stone-500 w-full  h-0.5/6   lg:w-1/3 lg:h-3/4 2xl:w-1/3 2xl:h-3/4 xl:w-1/3 xl:h-3/4  border-b-2 border-black'>
       <ul>
@@ -260,7 +287,7 @@ height={40}
 </div>
     </div>
     </div>
-    <div className=' mx-0 inline-flex  mt-72 2xl:mt-5 xl:mt-5  sm:mt-56 lg:mt-12 md:mt-72 '>
+    <div className=' mx-0 inline-flex  mt-72 2xl:mt-5 xl:mt-5  sm:mt-56 lg:mt-12 md:mt-72 w-full '>
     <Image src={kalashLogo} width={130 } height={10} alt='youtube' className='mr-mr-25'>
 
 </Image>

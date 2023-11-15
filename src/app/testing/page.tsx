@@ -2,10 +2,12 @@
 import React from 'react'
 import axios from 'axios'
 import { useState,useEffect,useRef } from 'react'
+import Image from 'next/image'
+import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 
 const page = () => {
   const [userSearch, setUserSearch] = useState("");
-const [image, setimage] = useState()
+const [image, setimage] = useState("")
 type Post = { 
   id: number; 
   title: { 
@@ -15,12 +17,21 @@ type Post = {
     rendered: string; 
   }; 
 }; 
-const [data,setData] = useState<Post>() 
+const [data,setData] = useState<Post | null>() 
+const [loading , setloading ] = useState(false)
 // Holds a reference the current input field value 
 const inputRef = useRef(null);
 
   // Holds a reference the current input field value
+  const extractContent = (html: string)=> {
+    const imgRegex = /<img[^>]+src="([^">]+)"/;
   
+    const imgMatch = html.match(imgRegex);
+  
+    const imageUrl:string | StaticImport = imgMatch ? imgMatch[1] : '';
+  
+    return  imageUrl;
+  };
   // Makes an API request whenever the search state is updated
   useEffect(() => {
   
@@ -38,9 +49,11 @@ const inputRef = useRef(null);
         axios.get(query)
           .then((response)=> {
             const post = response.data[0]
-      console.log(response.data)
-            console.log(data)
             setData(post)
+            if(data === undefined){
+              return console.log('nothing finded')
+            }
+            else if(post !== undefined){
             const content = post.content.rendered;
             const imageUrlMatch = content.match(/src="([^"]+)"/); // Находим URL изображения
             const imageUrl = imageUrlMatch ? imageUrlMatch[1] : null; // Получаем URL изображения (если оно было найдено)
@@ -48,11 +61,15 @@ const inputRef = useRef(null);
             // Удаляем HTML-теги, кроме <p>
             const strippedContent = content.replace(/(<(?!p\b)[^>]+>)|(\n)/g, '');
         
-            console.log('URL изображения:', imageUrl);
+            console.log('URL изображения:', image);
 
           // alert(imageUrl)
             //alert(strippedContent)
             console.log('Текст без тегов:', strippedContent);
+            }
+            else{
+            return console.log('Content is null ')
+            }
             // Execute next steps
           })
       }
@@ -88,11 +105,11 @@ const inputRef = useRef(null);
 <button onClick={getData}></button>
    </div>
    { 
-        data == null ? null : 
+        data == null?null : 
         <div key={data.id}  className="w-2/3 rounded-lg h-64 border-4 bg-gradient-to-r from-blue-500 to-blue-900"> 
         <h1>{data.id}</h1> 
+        <Image src= {extractContent(data.content.rendered)} alt='' width={100} height={20}  className=' pl-2 pt-2 ' />
         <h1 className="text-red-950 w-32">{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
-        <p>{data.id}</p> 
       </div> 
         } 
         </main> 

@@ -82,7 +82,7 @@ height={40}
         <Link href="https://kalashnikov.academy/events?skill=303" passHref>Записаться на IT</Link></button>
         </div>
         <div className='h-screen w-1/2 bg-gradient-to-l from-cyan-500 to-blue-500 '>
-        <Canvas camera={{ position: [50,10, -30], fov: 5 , } } className=' '>
+        <Canvas camera={{ position: [50,10, 80], fov: 2.5 , } } className=' '>
         <directionalLight castShadow intensity={1} />
     <OrbitControls/>
 <Loader name={'DescArea'} />
