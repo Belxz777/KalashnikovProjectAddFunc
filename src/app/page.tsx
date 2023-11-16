@@ -17,6 +17,7 @@ import vklogo from '../images&svg/pngwing.com (1).png'
 import Logo from '@/reusable/Logo'
 import { DotButton,PrevButton,NextButton } from '@/reusable/Dots&Arrows'
 import { StaticImport } from 'next/dist/shared/lib/get-img-props'
+import Link from 'next/link'
 interface IUser {
   userId: number,
   id:number,
@@ -25,30 +26,7 @@ interface IUser {
 }
 export default function Home() {
   const [animate, setanimate] = useState(false)
-  const [slides, setSlides] = useState<any[]>([]) 
-  const [blocks, setBlocks] = useState<any[]>([])
-  const [dataSearched, setdataSearched] = useState<IUser>()
-  const [search, setsearch] = useState('')
-  const [prevBtnDisabled, setprevBtnDisabled] = useState(true)
-  const [nextBtnDisabled, setnextBtnDisabled] = useState(true)
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [load, setload] = useState(true)
-  useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/photos")
-      .then((response) => {
-        //setSlides(response.data.slice(-80));
-        setload(true)
-      });
-  }, []);
-  useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/photos")
-      .then((response) => {
-        setSlides(response.data.slice(-80));
-      });
-  }, []);
+  const [slides, setSlides] = useState<Data[] | null >(null) 
   const [userSearch, setUserSearch] = useState("");
   const [image, setimage] = useState(null)
   type Post = { 
@@ -60,6 +38,15 @@ export default function Home() {
       rendered: string; 
     }; 
   }; 
+  interface Data {
+    id:number;
+    title: {
+      rendered:string
+    }
+    content: {
+      rendered: string;
+    };
+  }
   const [data,setData] = useState<Post>() // типизация для поста
   // Holds a reference the current input field value  ссылка реф крч
   const inputRef = useRef(null);
@@ -108,6 +95,25 @@ export default function Home() {
   
     return text ;
   };
+  const getPosts= ()=>{
+    const id  = 24
+    const query = `http://localhost:10004/wp-json/wp/v2/posts?categories=${id}`;
+  
+    axios.get(query)
+      .then((response)=> {
+        const post = response.data
+        console.log(post)
+        setSlides(post)
+        console.log(slides)
+        if(data === undefined){
+          return console.log('nothing finded')
+        }
+        else{
+        return console.log('Content is null ')
+        }
+        // Execute next steps
+      })
+  }
   // Makes an API request whenever the search state is updated
   useEffect(() => {
   
@@ -137,8 +143,9 @@ export default function Home() {
       }
     }, 500)
     // Clean up effect
-  })
-  
+  },[userSearch])
+  window.addEventListener('load',getPosts)
+
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
     < >
@@ -154,7 +161,7 @@ height={40}
 <h1  className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
 <button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
 </header>
-<section className=' w-full  bg-[url("../images&svg/nero.jpg")]   overflow-hidden'> 
+<section className=' w-full  bg-[url("../images&svg/nero.jpg")]   '> 
 <motion.div
     className="  absolute z-20 w-72  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
     initial={{ x: 100 }}
@@ -171,36 +178,31 @@ height={40}
     <div className='text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans '>
       Лучшие проекты
     </div>
-    <div className='w-screen  pb-6 pt-6'>
+    <div className=' w-[150rem]  pb-6 pt-6 pr-6  pl-6'>
     {/*начало блоков карусели */}
-    {load ?
-
-  <div ref={emblaRef} className='l'>
-    <div  className="flex  gap-x-3 transform  rotate-x-45  rotate-y-45    " >
+    {slides === null ? null :
+  <div ref={emblaRef} className='w-full '>
+    <div  className=" gap-x-12 transform  rotate-x-45  rotate-y-45  pl-10   flex w-full" >
   {slides.map((slide) => (
-  <div key={slide.id}  className=" w-3/4 h-64 bg-white hover:bg-slate-300  rounded-lg   shadow-xl ">
-    <Image src= {slide.url} alt='' width={100} height={20}  className=' pl-2 pt-2 ' />
-    <h1  className=" font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans w-80 ">{slide.title} </h1>
+  <div key={slide.id}  className= " w-full  h-64 bg-white hover:bg-slate-300  rounded-lg   shadow-xl  overflow-y-scroll">
+    <Link href={`http://localhost:3000/posts/${ slide.id}`}  className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-900 font-sans text-xl' > Проект № {slide.id}</Link>
+    <Link   href={'/posts/${ slide.id}'} className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-900 to-gray-900 font-sans text-xl'>{slide.title.rendered}</Link>
+    <Image src={extractImage(slide.content.rendered)} alt='' width={100} height={30} className=' float-right  pt-2 pr-8  rounded-xl'/>
+    <p>{extractText(slide.content.rendered)}</p>
+    <blockquote  className='p-4 my-4  bg-gradient-to-t from-blue-500 to-teal-500  border-l-4  border-blue-900 '>
+        <p className='text-white'>
+          {extractMade(slide.content.rendered)}
+        </p>
+        <p className='text-white'>
+          {extractDate(slide.content.rendered)}
+        </p>
+      </blockquote>
     </div>
         ))}
             </div>
   </div>
 
-  :
-  <motion.div
-    className=" w-52 h-52 bg-slate-950 "
-    initial={{ scale: 0 }}
-    animate={{ scale: [1, 2, 2, 1, 1],
-      rotate: [0, 0, 180, 180, 0],
-      borderRadius: ["0%", "0%", "50%", "50%", "0%"]}}
-    transition={{
-      duration: 2,
-        ease: "easeInOut",
-        times: [0, 0.2, 0.5, 0.8, 1],
-        repeat: Infinity,
-        repeatDelay: 1
-    }}
-  ></motion.div>}
+}
   </div>
 </section>
 
