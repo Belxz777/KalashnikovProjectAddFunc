@@ -14,6 +14,9 @@ import TypeWriter from 'typewriter-effect'
 import { delay } from 'framer-motion'
 import { useRef } from 'react'
 
+import {motion} from 'framer-motion'
+import Menu from '@/reusable/Menu'
+
 type Props = {}
 
 const page = (props: Props) => {
@@ -34,10 +37,22 @@ height={40}
  className=' pl-1 pt-1 select-none '>
 
 </Image>
-<h1  className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
-<button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
+<Link   href= '/'className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </Link><button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
 </header>
     <section className='flex '>
+    <motion.div
+    className="  absolute z-20 w-72  top-30  -right-48 bg-white rounded-md  border-4 border-blue-950 "
+    initial={{ x: 100 }}
+    animate={animate===true ?{  x: -100 } : ''}
+    transition={{
+      type: "spring",
+      stiffness: 260,
+      damping: 20
+    }}
+  >
+    <Menu />
+  </motion.div>
+
         <div className='h-screen w-1/2 bg-gradient-to-r from-green-500 to-emerald-500 '>
           <p  className=' ml-10  text-4xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-black to-blue-900 font-sans '>
           Направление Aero  в Академии Калашников это:

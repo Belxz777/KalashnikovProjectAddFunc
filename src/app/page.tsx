@@ -5,15 +5,14 @@ import { useState,useCallback,useEffect,useRef } from 'react'
 import BurgerMenuIcon from '@/reusable/BurgerMenuLogo'
 import CrossMenu from '@/reusable/Cross'
 import Menu from '@/reusable/Menu'
-import Carousel from 'embla-carousel'
-import useEmblaCarousel, { EmblaOptionsType,EmblaCarouselType } from "embla-carousel-react";
+import useEmblaCarousel, { EmblaOptionsType,EmblaCarouselType } from "embla-carousel-react"
 import axios from 'axios'
-import verf from '../images&svg/pngwing.com (4).png'
-import izmashlogo from '../images&svg/2197058.png'
+import verf from '../images&svg/verf.png'
+import izhmashlogo from  '../images&svg/izhmash.png'
 import kalashLogo from '../images&svg/kalashLogo.png'
 import nintynine from '../images&svg/99png.png'
-import ytlogo from '../images&svg/pngwing.com.png'
-import vklogo from '../images&svg/pngwing.com (1).png'
+import ytlogo from '../images&svg/yt.png'
+import vklogo from '../images&svg/vk.png'
 import Logo from '@/reusable/Logo'
 import { DotButton,PrevButton,NextButton } from '@/reusable/Dots&Arrows'
 import { StaticImport } from 'next/dist/shared/lib/get-img-props'
@@ -96,7 +95,7 @@ export default function Home() {
     return text ;
   };
   const getPosts= ()=>{
-    const id  = 24
+    const id  = 3
     const query = `http://localhost:10004/wp-json/wp/v2/posts?categories=${id}`;
   
     axios.get(query)
@@ -114,6 +113,9 @@ export default function Home() {
         // Execute next steps
       })
   }
+  useEffect (()=>{
+getPosts()
+  },[])
   // Makes an API request whenever the search state is updated
   useEffect(() => {
   
@@ -144,12 +146,11 @@ export default function Home() {
     }, 500)
     // Clean up effect
   },[userSearch])
-  window.addEventListener('load',getPosts)
 
 //завтра реализвать https://jsonplaceholder.typicode.com/posts
   return (
     < >
-<header className=' bg-white w-full  h-24 flex justify-start   border-b-4    ' >
+<header className=' bg-white w-full  h-24 flex justify-start   border-b-4' >
 <Image
 alt= ' '
 width= {90}
@@ -158,7 +159,7 @@ height={40}
  className=' pl-1 pt-1 select-none '>
 
 </Image>
-<h1  className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </h1>
+<Link   href= '/'className=' text-xl pt-5 font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans'>академия <br/> калашников </Link>
 <button onClick={()=>{setanimate(!animate)}} className= ' pl-pl-35 sm:pl-pl-40  lg:pl-pl-60  xl:pl-pl-70  md:pl-pl-70   '>{animate===true ? <CrossMenu/>  : <BurgerMenuIcon/>}</button>
 </header>
 <section className=' w-full  bg-[url("../images&svg/nero.jpg")]   '> 
@@ -296,7 +297,7 @@ height={40}
 <Image src={nintynine} width={100 } height={10} alt='youtube' className='mx-mx-25'>
 
 </Image>
-<Image src={izmashlogo} width={130 } height={10} alt='youtube' className=' mx-mx-25'>
+<Image src={izhmashlogo} width={130 } height={10} alt='youtube' className=' mx-mx-25'>
 
 </Image>
 <Image src={verf} width={100 } height={30} alt='youtube' className=' mx-mx-25'>

@@ -29,13 +29,13 @@ const Menu = (props: Props) => {
             </a>
           </li>
           <li className="px-4 py-2 hover:bg-red-200">
-            <a href="#" className="flex pr-4">
+            <a href="/Kosmos" className="flex pr-4">
              Kosmos  <BsGlobeCentralSouthAsia/>
             </a>
           </li>
           <li className="px-4 py-2 hover:bg-red-200">
-            <a href="#" className="flex pr-4">
-           Prom Dizain <BsHexagonHalf/>
+            <a href="/Aero" className="flex pr-4">
+           Aero<BsHexagonHalf/>
             </a>
           </li>
         </ul>
