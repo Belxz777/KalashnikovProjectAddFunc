@@ -19,7 +19,7 @@ const config: Config = {
       margin:{
 'ml-40':'35%',
 'mx-25': '20%',
-'mr-25':'25%',
+'mr-25':'5%',
 
       },
       borderColor:{

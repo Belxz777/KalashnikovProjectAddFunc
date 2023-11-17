@@ -185,8 +185,8 @@ height={40}
     <div  className=" gap-x-12 transform  rotate-x-45  rotate-y-45  pl-10   flex w-full" >
   {slides.map((slide) => (
   <div key={slide.id}  className= " w-full  h-64 bg-white hover:bg-slate-300  rounded-lg   shadow-xl  overflow-y-scroll">
-    <Link href={`http://localhost:3000/posts/${ slide.id}`}  className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-900 font-sans text-xl' > Проект № {slide.id}</Link>
-    <Link   href={'/posts/${ slide.id}'} className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-900 to-gray-900 font-sans text-xl'>{slide.title.rendered}</Link>
+    <Link href={`http://localhost:3000/projects/${ slide.id}`}  className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-900 font-sans text-xl' > Проект № {slide.id}</Link>
+    <Link  href={'/posts/${ slide.id}'} className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-900 to-gray-900 font-sans text-xl'>{slide.title.rendered}</Link>
     <Image src={extractImage(slide.content.rendered)} alt='' width={100} height={30} className=' float-right  pt-2 pr-8  rounded-xl'/>
     <p>{extractText(slide.content.rendered)}</p>
     <blockquote  className='p-4 my-4  bg-gradient-to-t from-blue-500 to-teal-500  border-l-4  border-blue-900 '>
@@ -206,7 +206,7 @@ height={40}
   </div>
 </section>
 
-<main className='w-full h-96  flex   items-center   justify-center  bg-[url("../images&svg/nero.jpg")]  '>
+<main className='w-full h-screen  flex-wrap overflow-hidden  items-center   justify-center  bg-[url("../images&svg/nero.jpg")] lg:flex xl:flex 2xl:flex   '>
   <div className='flex flex-wrap flex-col'>
 <h1 className=' text-center  font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-900 font-sans text-xl	'> Найди конкретный проект нужный именно тебе </h1>
   <input
@@ -218,8 +218,8 @@ height={40}
    </div>
    { 
         data == null?null : 
-        <div key={data.id}  className="w-2/3 rounded-lg h-full border-4 bg-gradient-to-b from-blue-500 to-teal-500 overflow-y-scroll"> 
-        <h1 className=' font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-blue-900 font-sans text-lg '> Проект № {data.id}</h1> 
+        <div key={data.id}  className="w-2/3 h-2/4  rounded-xl border-4 bg-gradient-to-b from-blue-500 to-teal-500 overflow-y-scroll items-center"> 
+        <Link href={`http://localhost:3000/projects/${ data.id}`}  className=' font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-blue-900 font-sans text-lg '> Проект № {data.id}</Link> 
         <Image src= {extractImage(data.content.rendered)} alt='' width={200} height={100}  className=' float-right  pt-2 pr-8  rounded-xl' />
         <h1 className='font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-900 font-sans text-xl'>{data.title.rendered}</h1> {/* Обратитесь к title как к строке, не как к элементу массива */} 
       <p className='text-white'> {extractText(data.content.rendered)}</p>
